@@ -43,6 +43,8 @@ bool Search_Irregularities(vector<string> vetor){
         }
         i++;
     }
+
+    return false;
 }
 
 void Impressao(vector<string> vetor, bool error){
