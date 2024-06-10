@@ -1,0 +1,91 @@
+#include <iostream>
+#include <regex>
+
+using namespace std;
+
+void RegSearch(vector<string> &copas, vector<string> &espadas, vector<string> &ouro, vector<string> &paus, string naipe){
+    regex reg(R"(\d{2}[CUEP])");
+    smatch matches;
+
+    while(regex_search(naipe, matches, reg)){
+        
+        string carta = matches.str(0);
+        char tipo = carta[2];
+
+        switch (tipo)
+        {
+        case 'C':
+            copas.push_back(carta);
+            break;
+        case 'E':
+            espadas.push_back(carta);
+            break;
+        case 'U':
+            ouro.push_back(carta);
+            break;
+        case 'P':
+            paus.push_back(carta);
+            break;
+        }
+        naipe = matches.suffix().str();
+    }
+
+}
+
+bool Search_Irregularities(vector<string> vetor){
+
+    int i = 0;
+
+    for (string carta : vetor){
+        for(int j = vetor.size()-1; j > i; j--){
+            if(carta == vetor[j]) 
+                return true;
+        }
+        i++;
+    }
+}
+
+void Impressao(vector<string> vetor, bool error){
+
+    int missing = (13 - vetor.size());
+
+    if(error)
+        cout << "error" << endl;
+    else
+        cout << missing << endl;
+}
+
+
+int main(){
+
+    string naipe;
+    vector<string> copas;
+    vector<string> espadas;
+    vector<string> ouro;
+    vector<string> paus;
+    vector<bool> error(4, false);
+
+    cin >> naipe;
+
+    if(naipe.length() < 3 and naipe.length() > 156){
+        cout << "error" << endl;
+        cout << "error" << endl;
+        cout << "error" << endl;
+        cout << "error" << endl;
+        return 0;
+    }
+
+    RegSearch(copas, espadas, ouro, paus, naipe);
+
+    error.at(0) = Search_Irregularities(copas);
+    error.at(1) = Search_Irregularities(espadas);
+    error.at(2) = Search_Irregularities(ouro);
+    error.at(3) =  Search_Irregularities(paus);
+   
+    Impressao(copas, error.at(0));
+    Impressao(espadas, error.at(1));
+    Impressao(ouro, error.at(2));
+    Impressao(paus, error.at(3));
+
+    return 0;
+}
