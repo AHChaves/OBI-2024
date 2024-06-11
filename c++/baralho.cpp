@@ -4,29 +4,35 @@
 using namespace std;
 
 void RegSearch(vector<string> &copas, vector<string> &espadas, vector<string> &ouro, vector<string> &paus, string naipe){
-    regex reg(R"(\d{2}[CUEP])");
+    regex reg(R"(\d{2}[CEUP])");
     smatch matches;
 
     while(regex_search(naipe, matches, reg)){
         
         string carta = matches.str(0);
-        char tipo = carta[2];
 
-        switch (tipo)
-        {
-        case 'C':
-            copas.push_back(carta);
-            break;
-        case 'E':
-            espadas.push_back(carta);
-            break;
-        case 'U':
-            ouro.push_back(carta);
-            break;
-        case 'P':
-            paus.push_back(carta);
-            break;
+        if((carta[0] == '1' and carta[1] <= '3') or (carta[0] == '0' and carta[1] <= '9')){
+
+            char tipo = carta[2];
+
+            switch (tipo)
+            {
+            case 'C':
+                copas.push_back(carta);
+                break;
+            case 'E':
+                espadas.push_back(carta);
+                break;
+            case 'U':
+                ouro.push_back(carta);
+                break;
+            case 'P':
+                paus.push_back(carta);
+                break;
+            }
         }
+        else
+            return;
         naipe = matches.suffix().str();
     }
 
@@ -69,25 +75,22 @@ int main(){
 
     cin >> naipe;
 
-    if(naipe.length() < 3 and naipe.length() > 156){
-        cout << "error" << endl;
-        cout << "error" << endl;
-        cout << "error" << endl;
-        cout << "error" << endl;
+    if(naipe.size() >= 3 or naipe.size() <= 156){
+        
+        RegSearch(copas, espadas, ouro, paus, naipe);
+
+        error.at(0) = Search_Irregularities(copas);
+        error.at(1) = Search_Irregularities(espadas);
+        error.at(2) = Search_Irregularities(ouro);
+        error.at(3) =  Search_Irregularities(paus);
+    
+        Impressao(copas, error.at(0));
+        Impressao(espadas, error.at(1));
+        Impressao(ouro, error.at(2));
+        Impressao(paus, error.at(3));
+
         return 0;
     }
-
-    RegSearch(copas, espadas, ouro, paus, naipe);
-
-    error.at(0) = Search_Irregularities(copas);
-    error.at(1) = Search_Irregularities(espadas);
-    error.at(2) = Search_Irregularities(ouro);
-    error.at(3) =  Search_Irregularities(paus);
-   
-    Impressao(copas, error.at(0));
-    Impressao(espadas, error.at(1));
-    Impressao(ouro, error.at(2));
-    Impressao(paus, error.at(3));
 
     return 0;
 }
